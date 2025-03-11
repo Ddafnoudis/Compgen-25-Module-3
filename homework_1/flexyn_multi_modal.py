@@ -5,6 +5,8 @@ BRCA subtype analysis using multi-modal data
 # Import libraries
 import os
 import flexynesis as flx
+from pathlib import Path
+from matplotlib import pyplot as plt
 import torch
 import numpy as np
 
@@ -14,17 +16,34 @@ os.environ["OMP_NUM_THREADS"] = "1"
 # Define the number of HPO iterations
 HPO_ITER = 10
 
+# Define the folders
+DATA_FOLDER = "data/"
+DATA_FL_UNZIP = "brca_metabric_processed/"
+RESULTS_FOLDER = "b-params_metrics/"
+FIGURES_FOLDER = "figures/"
+
 
 def pipeline():
+
+    def create_folders(data_folder: Path, data_fl_unzip: Path, results_folder:Path, figures_folder: Path)-> None:
+        """
+        Create the folders if not exist
+        """
+        if not os.path.exists(data_folder):
+            os.mkdir(data_folder)
+        if not os.path.exists(data_fl_unzip):
+            os.mkdir(data_fl_unzip)
+        if not os.path.exists(results_folder):
+            os.mkdir(results_folder)
+        if not os.path.exists(figures_folder):
+            os.mkdir(figures_folder)
+
 
     def data_download():
         """
         Download the data
         """
-        if not os.path.exists("data/brca_metabric_processed"):
-            os.mkdir("data/")
-             # Execute the bash script 
-            os.system("bash data_download.sh")
+        os.system("bash data_download.sh")
 
 
     def data_importer():
@@ -55,12 +74,12 @@ def pipeline():
         print(f"Summary of the samples\n{flx.print_summary_stats(train_data)}\n")
 
         # Perform hyperparameter tuning
-        tuner = flx.HyperparameterTuning(dataset = train_data,
+        tuner = flx.HyperparameterTuning(dataset=train_data,
                                          model_class=flx.DirectPred,
                                          target_variables=["CLAUDIN_SUBTYPE"],
                                          config_name="DirectPred",
                                          n_iter=1,
-                                         plot_losses=True,
+                                         plot_losses=False,
                                          early_stop_patience=10)
         
         # Define the model and the best parameters
@@ -71,12 +90,7 @@ def pipeline():
 
         return model, best_params, test_data
 
-    # Download the data
-    data = data_download()
-    # Model, Best parameters and test data
-    model, best_params, test_data = data_importer()
-
-    def prediction(model, best_params, test_data):
+    def prediction(model, best_params, test_data, result_folder=RESULTS_FOLDER, figures=FIGURES_FOLDER):
         """
         Prediction task of the model
         """
@@ -89,28 +103,45 @@ def pipeline():
         
         print(f"Metrics: {metrics_df}\n")
 
-        # Save the metrics & best parameters
-        metrics_df.to_csv("metrics.csv")
-        with open ("best_params.csv", "w") as f:
+        # Save the metrics
+        metrics_df.to_csv(result_folder + "metrics.csv")
+        # Open a file and save the best parameters
+        with open (result_folder + "best_params.csv", "w") as f:
             f.write(str(best_params))
         
+        # Rename test data
         ds = test_data
+        # Transform the data
         E = model.transform(ds)
-        print(type(E))
-        E.head()
+        # Print the type of model transforming data
+        print(f"Type of model transforming data: {type(E)}\n")
+        
+        print(f"Head of model transformed data: \n{E.head()}\n")
+
         # Visualize the embeddings in reduced dimensions
         f = 'CLAUDIN_SUBTYPE'
-        #map the sample labels from numeric vector to initial labels. 
+        # Map the sample labels from numeric vector to initial labels. 
         labels = [ds.label_mappings[f][x] for x in ds.ann[f].numpy()] 
 
+        # Define the PCA figure of reduced plots
         fig = flx.plot_dim_reduced(E, labels, color_type = 'categorical', method='pca')
+        # save the figure
+        fig.save(figures + "PCA.png")
         # Plot the figure
         fig.show()
-        # UMAP Visualization
+        
+        # Define the UMAP figure of reduced plots
         fig2 = flx.plot_dim_reduced(E, labels, color_type = 'categorical', method='umap')
+        fig2.save(figures + "UMAP.png")
         # FIgure background color white
         fig2.show()
 
+    # Create the folders
+    create_folders(data_folder=DATA_FOLDER, data_fl_unzip=DATA_FL_UNZIP, results_folder=RESULTS_FOLDER, figures_folder=FIGURES_FOLDER)
+    # Download the data
+    data = data_download()
+    # Model, Best parameters and test data
+    model, best_params, test_data = data_importer()
     # Prediction task
     prediction(model=model, best_params=best_params, test_data=test_data)
 
