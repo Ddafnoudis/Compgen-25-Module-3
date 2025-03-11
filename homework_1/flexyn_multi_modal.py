@@ -6,6 +6,8 @@ BRCA subtype analysis using multi-modal data
 import os
 import flexynesis as flx
 from pathlib import Path
+import torch
+torch.set_num_threads(4)
 
 # Set the seed for reproducibility
 os.environ["OMP_NUM_THREADS"] = "1"
