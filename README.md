@@ -1,9 +1,4 @@
-# Compgen-25-Module-3
-
-### Date
-10th - 16th of March 2025
-
-### Title
+# Title
 Multi-omics Data Integration Using Deep Learning approaches.
 
 ### Tools
@@ -28,3 +23,9 @@ numpy==2.1.3
 In [Homework-1](https://github.com/Ddafnoudis/Compgen-25-Module-3/tree/main/homework_1) repository there are my scripts for this course and the original demostration from the author and developer.
 
 ## Day 2
+
+
+
+
+### Date
+10th - 16th of March 2025
