@@ -23,7 +23,7 @@ numpy==2.1.3
 In [Homework-1](https://github.com/Ddafnoudis/Compgen-25-Module-3/tree/main/homework_1) repository there are my scripts for this course and the original demostration from the author and developer.
 
 ## Day 2
-In [Homework-2]
+The [Homework-2](https://github.com/Ddafnoudis/Compgen-25-Module-3/tree/main/homework_2) is about a multi-omic analysis of brain tumors called gliomas using mutations and copy-number-variations along with other clinical variables.
 
 
 
