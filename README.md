@@ -25,6 +25,8 @@ In [Homework-1](https://github.com/Ddafnoudis/Compgen-25-Module-3/tree/main/home
 ## Day 2
 The [Homework-2](https://github.com/Ddafnoudis/Compgen-25-Module-3/tree/main/homework_2) is about a multi-omic analysis of brain tumors called gliomas using mutations and copy-number-variations along with other clinical variables.
 
+## Day 3
+The [Homework-3](https://github.com/Ddafnoudis/Compgen-25-Module-3/blob/main/homework_3) we will practice building multiple models on the command-line using multi-omics data from human cancer cell lines from the CCLE and GDSC databases.
 
 
 ### Date
