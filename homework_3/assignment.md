@@ -34,7 +34,7 @@ Steps for the homework:
       **Hint 2**: It is okay to use few HPO iterations for this exercise (e.g. 15 iterations or so) (considering the resourse/time limits etc). 
        The point of this exercise is not to find the perfect model, but to get an insight on the idea of benchmarking different setups. 
      
-  5. Open a jupyter notebook and do the following:
+  4. Open a jupyter notebook and do the following:
   
         a) Import the results of the experiments from step 3, and rank the experiments based on performance (pearson_corr)
         Which combination yields the best results?
@@ -45,5 +45,5 @@ Steps for the homework:
            Get top 10 markers. Do literature search. Are any of the top markers associated to “Erlotinib”?  
 
 
-  6. Submit the jupyter notebook from step 4 as your assignment on the google classroom. 
+  5. Submit the jupyter notebook from step 4 as your assignment on the google classroom. 
   
