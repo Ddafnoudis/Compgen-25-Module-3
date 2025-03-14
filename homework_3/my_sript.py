@@ -2,13 +2,14 @@
 Pipeline
 """
 import os
+import time
 from pandas import DataFrame
 
 
 def pipeline():
     """
-    Download data
-    Analysis of the data
+    1) Download data
+    2) Analysis of the data
     """
 
     def download_data()-> DataFrame:
@@ -25,7 +26,7 @@ def pipeline():
         else:
             # Print that data exist
             print("Data exist")
-        
+        # Output direcotry
         if not os.path.exists("analysis_fl/"):
             os.mkdir("analysis_fl/")
 
@@ -39,9 +40,14 @@ def pipeline():
             os.system("bash preprocessing_files.sh")
         else:
             print("Files are ready for analysis")
+            # Start time 
+            start_time = time.time()
             # Apply supervised training
             os.system("bash analysis.sh")
-    
+            # End time
+            end_time = time.time()
+            # Total time
+            print("Time of execution: ", end_time - start_time)
 
 
     download_data()
