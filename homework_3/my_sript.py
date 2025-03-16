@@ -3,7 +3,9 @@ Pipeline
 """
 import os
 import time
+import torch
 import pandas as pd
+import flexynesis as flx
 from pathlib import Path
 from pandas import DataFrame
 from typing import Dict, List
@@ -168,10 +170,56 @@ def pipeline():
         plt.show()
 
 
+    def emb():
+        """
+        """
+        # Load embeddings
+        train_embeddings = pd.read_csv("analysis_fl/DirectPred/DirectPred_mutrna_early.embeddings_train.csv", sep=",")
+        test_embeddings = pd.read_csv("analysis_fl/DirectPred/DirectPred_mutrna_early.embeddings_test.csv", sep=",")
+
+        clinical_data = pd.read_csv("ccle_vs_gdsc/test/clin.csv", sep=",")
+        print(clinical_data["tissueid"].unique())
+        # # Load the model
+        final_model = torch.load("analysis_fl/DirectPred/DirectPred_mutrna_early.final_model.pth", weights_only=False)
+
+        # Define the data from test-embendings
+        data_tr = train_embeddings.iloc[:, 1:].values  
+        data_te = test_embeddings.iloc[:, 1:].values
+        # Extracting the labels 
+        labels_tr = train_embeddings.iloc[:, 0].values
+        labels_te = test_embeddings.iloc[:, 0].values
+
+        # Applying PCA and plotting with flexynesis plot
+        fig_1 = flx.plot_dim_reduced(data_tr, labels_tr, color_type="categorical")
+        fig_2 = flx.plot_dim_reduced(data_te, labels_te, color_type="numerical")
+
+        fig_1.show()
+        fig_2.show()
+
+
+        featur_impor_dataset = pd.read_csv("analysis_fl/DirectPred/DirectPred_mutrna_early.feature_importance.IntegratedGradients.csv", sep=",")
+
+        # print(featur_impor_dataset)
+        importance_col = featur_impor_dataset["importance"]
+
+        # Sort the DataFrame by the 'importance' column in descending order
+        sorted_data = featur_impor_dataset.sort_values('importance', ascending=False)
+
+        # print(sorted_data)
+        sorted_data_10 = sorted_data[:10]
+        print(sorted_data_10)
+
+        # Print the 10 first names of genes based on sorted importance column
+        print(sorted_data_10["name"])
+
+
     download_data()
     analysis()
     direct_pred, supervised_vae = preprocessing_results(dir_directpred=DIRECTEDPRED, dir_supervised_vae=SUPERVISED_VAE)
     plots(direct_pred=direct_pred, supervised_vae=supervised_vae)
+    emb()
+
+
 
 if __name__=="__main__":
     pipeline()
