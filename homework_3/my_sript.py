@@ -5,6 +5,10 @@ import os
 import time
 from pandas import DataFrame
 
+# Define the analysis folders
+DIRECTEDPRED = "analysis_fl/DirectPred/"
+SUPERVISED_VAE = "analysis_fl/supervised_vae/"
+
 
 def pipeline():
     """
@@ -31,23 +35,28 @@ def pipeline():
             os.mkdir("analysis_fl/")
 
     
-    def analysis():
+    def analysis(dir_directpred=DIRECTEDPRED, dir_supervised_vae=SUPERVISED_VAE):
         """
         """
-        # Preprocess file names
-        if not os.path.isfile("ccle_vs_gdsc/train/mut.csv") and os.path.isfile("ccle_vs_gdsc/test/mut.csv"):
-            # Change files names 
-            os.system("bash preprocessing_files.sh")
+        # Check if folders exist
+        if not os.path.exists(dir_directpred) or not os.path.exists(dir_supervised_vae):
+            # Preprocess file names
+            if not os.path.isfile("ccle_vs_gdsc/train/mut.csv") and os.path.isfile("ccle_vs_gdsc/test/mut.csv"):
+                # Change files names 
+                os.system("bash preprocessing_files.sh")
+            else:
+                print("Files are ready for analysis")
+                # Start time 
+                start_time = time.time()
+                # Apply supervised training
+                os.system("bash analysis.sh")
+                # End time
+                end_time = time.time()
+                # Total time
+                print("Time of execution: ", end_time - start_time)
         else:
-            print("Files are ready for analysis")
-            # Start time 
-            start_time = time.time()
-            # Apply supervised training
-            os.system("bash analysis.sh")
-            # End time
-            end_time = time.time()
-            # Total time
-            print("Time of execution: ", end_time - start_time)
+            print("Folders exist")
+    
 
 
     download_data()
